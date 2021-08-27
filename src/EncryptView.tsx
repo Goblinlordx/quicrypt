@@ -11,10 +11,24 @@ export const EncryptView = () => {
 
   return (
     <>
-      <textarea onInput={(e) => setPt(e.currentTarget.value)}></textarea>
-      <textarea onInput={(e) => setPassword(e.currentTarget.value)}></textarea>
-      <textarea disabled value={ct}></textarea>
-      <Link to={decryptPath}>URL</Link>
+      <label>
+        <span>PlainText: </span>
+        <textarea
+          style={{ height: 300 }}
+          onInput={(e) => setPt(e.currentTarget.value)}
+        ></textarea>
+      </label>
+      <label>
+        <span>Password: </span>
+        <textarea
+          onInput={(e) => setPassword(e.currentTarget.value)}
+        ></textarea>
+      </label>
+      <label>
+        <span>CipherText: </span>
+        <textarea disabled value={ct}></textarea>
+      </label>
+      <Link to={decryptPath}>Decryption link</Link>
     </>
   );
 };

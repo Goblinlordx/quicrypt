@@ -39,12 +39,21 @@ export const DecryptView = () => {
 
   return (
     <>
-      <textarea onInput={(e) => setCt(e.currentTarget.value)} value={ct} />
-      <textarea
-        onInput={(e) => setPassword(e.currentTarget.value)}
-        value={password}
-      />
-      <textarea disabled value={pt}></textarea>
+      <label>
+        <span>CipherText: </span>
+        <textarea onInput={(e) => setCt(e.currentTarget.value)} value={ct} />
+      </label>
+      <label>
+        <span>Password: </span>
+        <textarea
+          onInput={(e) => setPassword(e.currentTarget.value)}
+          value={password}
+        />
+      </label>
+      <label>
+        <span>PlainText: </span>
+        <textarea style={{ height: 300 }} disabled value={pt}></textarea>
+      </label>
       <div>{err?.message}</div>
     </>
   );
