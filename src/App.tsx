@@ -1,36 +1,22 @@
-import React, { useState } from 'react';
-import './App.css';
-import { useDecrypt, useEncrypt } from './crypto';
+import React from "react";
+import "./App.css";
+
+import { Redirect } from "react-router";
+import { Switch, Route } from "react-router-dom";
+
+import { DecryptView } from "./DecryptView";
+import { EncryptView } from "./EncryptView";
 
 function App() {
-  const [pt, setPt] = useState("");
-  const [password, setPassword] = useState("");
-  const ct = useEncrypt(password, pt)
-
-  const [ct2, setCt2] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [pt2, err] = useDecrypt(password2, ct2)
-
-
   return (
     <div className="App">
       <header className="App-header">
-        <div>
-          <textarea onInput={(e) => setPt(e.currentTarget.value)}></textarea>
-          <textarea
-            onInput={(e) => setPassword(e.currentTarget.value)}
-          ></textarea>
-          <textarea disabled value={ct}></textarea>
-        </div>
-        <hr />
-        <div>
-          <textarea onInput={(e) => setCt2(e.currentTarget.value)}></textarea>
-          <textarea
-            onInput={(e) => setPassword2(e.currentTarget.value)}
-          ></textarea>
-          <textarea disabled value={pt2}></textarea>
-          <div>{err?.message}</div>
-        </div>
+        <Switch>
+          <Route path="/encrypt" component={EncryptView} />
+          <Route path="/decrypt" component={DecryptView} />
+          <Route path="/about" component={EncryptView} />
+          <Redirect to="/encrypt" />
+        </Switch>
       </header>
     </div>
   );
