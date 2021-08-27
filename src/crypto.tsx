@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
 
+const BLOCK_BYTE_SIZE = 8;
+
 const bufToAlpha = (buf: ArrayBuffer) => {
   const arr = Array.from(new Uint8Array(buf));
-  return btoa(arr.map((byte) => String.fromCharCode(byte)).join(""));
+  const padSize = Math.abs((arr.length % BLOCK_BYTE_SIZE) - BLOCK_BYTE_SIZE)
+  const paddedArr = arr.concat(new Array(padSize).fill(padSize))
+  const str = paddedArr.map((byte) => String.fromCharCode(byte)).join("")
+  return btoa(str);
 };
 
-const alphaToBuf = (str: string) =>
-  new Uint8Array(atob(str).split('').map((ch) => ch.charCodeAt(0)));
+const alphaToBuf = (str: string) => {
+  const paddedArr = atob(str).split("")
+  const padSize = paddedArr[paddedArr.length - 1].charCodeAt(0)
+  const isPadded = padSize > 0 && padSize < BLOCK_BYTE_SIZE;
+  const arr = isPadded
+    ? paddedArr.slice(0, paddedArr.length - padSize)
+    : paddedArr;
+
+  return new Uint8Array(arr.map((ch) => ch.charCodeAt(0)));
+}
 
 const encrypt = async (password: string, pt: string) => {
   const pwHash = await crypto.subtle.digest(
