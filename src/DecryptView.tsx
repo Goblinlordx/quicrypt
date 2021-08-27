@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { History } from "history";
 import { match, useLocation, useRouteMatch } from "react-router";
 import { useHistory } from "react-router-dom";
@@ -36,25 +36,39 @@ export const DecryptView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryCt]);
 
-
   return (
-    <>
-      <label>
-        <span>CipherText: </span>
-        <textarea onInput={(e) => setCt(e.currentTarget.value)} value={ct} />
-      </label>
-      <label>
-        <span>Password: </span>
+    <div className="flex flex-grow flex-col m-4">
+      <label className="flex flex-col m-4">
+        <div>CipherText: </div>
         <textarea
+          className="input"
+          onInput={(e) => setCt(e.currentTarget.value)}
+          value={ct}
+        />
+      </label>
+      <label className="flex flex-col m-4">
+        <div>Password: </div>
+        <textarea
+          className="input"
           onInput={(e) => setPassword(e.currentTarget.value)}
           value={password}
         />
       </label>
-      <label>
-        <span>PlainText: </span>
-        <textarea style={{ height: 300 }} disabled value={pt}></textarea>
+      <label className="flex flex-col flex-grow m-4">
+        <div>PlainText: </div>
+        {!err && (
+          <textarea
+            className="input flex-grow h-20 bg-green-200 bg-opacity-100"
+            disabled
+            value={pt}
+          />
+        )}
+        {err && (
+          <div className="input flex-grow content-center justify-center bg-red-500">
+            {err?.message}
+          </div>
+        )}
       </label>
-      <div>{err?.message}</div>
-    </>
+    </div>
   );
 };

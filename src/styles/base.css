@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .input {
+    @apply p-1 resize-none text-black;
+  }
+}

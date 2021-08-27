@@ -7,28 +7,29 @@ export const EncryptView = () => {
   const [password, setPassword] = useState("");
   const ct = useEncrypt(password, pt);
 
-  const decryptPath = `/decrypt?ct=${encodeURIComponent(ct)}`
+  const decryptPath = `/decrypt?ct=${encodeURIComponent(ct)}`;
 
   return (
-    <>
-      <label>
-        <span>PlainText: </span>
+    <div className="flex flex-grow flex-col">
+      <label className="flex flex-grow flex-col m-8">
+        <div>PlainText: </div>
         <textarea
-          style={{ height: 300 }}
+          className="input flex-grow"
           onInput={(e) => setPt(e.currentTarget.value)}
         ></textarea>
       </label>
-      <label>
-        <span>Password: </span>
+      <label className="flex flex-col m-8">
+        <div>Password: </div>
         <textarea
+          className="input"
           onInput={(e) => setPassword(e.currentTarget.value)}
         ></textarea>
       </label>
-      <label>
-        <span>CipherText: </span>
-        <textarea disabled value={ct}></textarea>
+      <label className="flex flex-col m-8">
+        <div>CipherText: </div>
+        <textarea className="input" disabled value={ct}></textarea>
       </label>
       <Link to={decryptPath}>Decryption link</Link>
-    </>
+    </div>
   );
 };

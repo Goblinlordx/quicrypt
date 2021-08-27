@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 
-const BLOCK_BYTE_SIZE = 8;
+const BLOCK_BYTE_SIZE = 6;
 
 const bufToAlpha = (buf: ArrayBuffer) => {
   const arr = Array.from(new Uint8Array(buf));
-  const padSize = Math.abs((arr.length % BLOCK_BYTE_SIZE) - BLOCK_BYTE_SIZE)
-  const paddedArr = arr.concat(new Array(padSize).fill(padSize))
-  const str = paddedArr.map((byte) => String.fromCharCode(byte)).join("")
+  const padSize = BLOCK_BYTE_SIZE - (arr.length % BLOCK_BYTE_SIZE);
+  const paddedArr = arr.concat(new Array(padSize).fill(padSize));
+  const str = paddedArr.map((byte) => String.fromCharCode(byte)).join("");
   return btoa(str);
 };
 
 const alphaToBuf = (str: string) => {
-  const paddedArr = atob(str).split("")
-  const padSize = paddedArr[paddedArr.length - 1].charCodeAt(0)
-  const isPadded = padSize > 0 && padSize < BLOCK_BYTE_SIZE;
+  const paddedArr = atob(str).split("");
+  const padSize = paddedArr[paddedArr.length - 1].charCodeAt(0);
+  const isPadded = padSize > 0 && padSize <= BLOCK_BYTE_SIZE;
   const arr = isPadded
     ? paddedArr.slice(0, paddedArr.length - padSize)
     : paddedArr;
 
   return new Uint8Array(arr.map((ch) => ch.charCodeAt(0)));
-}
+};
 
 const encrypt = async (password: string, pt: string) => {
   const pwHash = await crypto.subtle.digest(
@@ -46,7 +46,10 @@ const encrypt = async (password: string, pt: string) => {
   return `${ivStr}$${ctStr}`;
 };
 
-const decrypt = async (password: string, ctRaw: string): Promise<[string, null | Error]>  => {
+const decrypt = async (
+  password: string,
+  ctRaw: string
+): Promise<[string, null | Error]> => {
   try {
     const pwUtf8 = new TextEncoder().encode(password.trim());
     const pwHash = await crypto.subtle.digest("SHA-256", pwUtf8);
@@ -62,9 +65,9 @@ const decrypt = async (password: string, ctRaw: string): Promise<[string, null |
     ]);
 
     const ptBuf = await crypto.subtle.decrypt(alg, key, ct);
-    return [new TextDecoder().decode(ptBuf), null]
+    return [new TextDecoder().decode(ptBuf), null];
   } catch (err) {
-    return ['', new Error('Invalid ciphertext or password')]
+    return ["", new Error("Invalid ciphertext or password")];
   }
 };
 
@@ -79,15 +82,14 @@ export const useEncrypt = (password: string, pt: string) => {
   return ct;
 };
 
-
 export const useDecrypt = (password: string, ct: string) => {
   const [pt, setPT] = useState("");
   const [err, setErr] = useState<null | Error>(null);
   useEffect(() => {
     void (async () => {
-      const [pt, err] = await decrypt(password, ct)
+      const [pt, err] = await decrypt(password, ct);
       setPT(pt);
-      setErr(err)
+      setErr(err);
     })();
   }, [password, ct]);
 
